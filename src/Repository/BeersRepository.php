@@ -20,6 +20,10 @@ class BeersRepository extends ServiceEntityRepository
         parent::__construct($registry, Beers::class);
     }
 
+
+    //TODO needs refaktoring, it is not SOLID
+    //TODO remove url actions, make more abstract
+    //TODO multiple search doesn't work
     public function findByFields($parameters)
     {
         $sqlQuery = $this->createQueryBuilder('b');
@@ -40,16 +44,16 @@ class BeersRepository extends ServiceEntityRepository
                         $sqlQuery->setParameter('val', $value);
                         break;
                     case 'type':
-                        $sqlQuery->andWhere('b.type = :val');
-                        $sqlQuery->setParameter('val', $value);
+                        $sqlQuery->andWhere('b.type LIKE :val');
+                        $sqlQuery->setParameter('val', '%' . $value . '%');
                         break;
                     case 'country':
                         $sqlQuery->andWhere('b.country = :val');
                         $sqlQuery->setParameter('val', $value);
                         break;
                     case 'name':
-                        $sqlQuery->andWhere('b.name = :val');
-                        $sqlQuery->setParameter('val', $value);
+                        $sqlQuery->andWhere('b.name LIKE :val');
+                        $sqlQuery->setParameter('val', '%' . $value . '%');
                         break;
                 }
             }

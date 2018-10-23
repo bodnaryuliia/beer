@@ -27,7 +27,7 @@ class BeerService
         return $this->objectRepository->find($beerId);
     }
 
-    public function getAllBeers(): ?array
+    public function getAllBeers()
     {
         return $this->objectRepository->findAll();
     }

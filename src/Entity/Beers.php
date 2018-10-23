@@ -51,6 +51,12 @@ class Beers
      */
     private $imageUrl;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Brewers", inversedBy="beers")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $brewId;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -136,6 +142,18 @@ class Beers
     public function setImageUrl(?string $imageUrl): self
     {
         $this->imageUrl = $imageUrl;
+
+        return $this;
+    }
+
+    public function getBrewId(): ?Brewers
+    {
+        return $this->brewId;
+    }
+
+    public function setBrewId(?Brewers $brewId): self
+    {
+        $this->brewId = $brewId;
 
         return $this;
     }

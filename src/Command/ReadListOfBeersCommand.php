@@ -32,15 +32,17 @@ class ReadListOfBeersCommand extends Command
         $this
             ->setName('read-list-of-beers')
             ->setDescription('Reads a list of beers from a remote API')
-            ->setHelp('This command allows you to check if “John” and “Mary” names are found the same number of times inside the provided text.')
+            ->setHelp('Reads a list of beers from a remote API http://ontariobeerapi.ca/beers/')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //TODO make ability to chose url
         $result = $this->callerApi->getDataFromApi('http://ontariobeerapi.ca/beers/');
         $this->parseResult->parse($result);
 
+        //TODO remove this string
         $output->writeln($result);
     }
 

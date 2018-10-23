@@ -13,8 +13,10 @@ use FOS\RestBundle\Controller\Annotations\FileParam;
 use Acme\FooBundle\Validation\Constraints\MyComplexConstraint;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use JMS\Serializer\SerializerBuilder;
 
 use App\Service\BeerService;
+use App\Service\BrewerService;
 
 
 class BeerRestApiController extends FOSRestController
@@ -22,14 +24,16 @@ class BeerRestApiController extends FOSRestController
     /**
      * @var BeerService
      */
+    private $brewerService;
     private $beerService;
 
     /**
      * BeerRestApiController constructor.
      * @param BeerService $beerService
      */
-    public function __construct(BeerService $beerService)
+    public function __construct(BeerService $beerService, BrewerService $brewerService)
     {
+        $this->brewerService = $brewerService;
         $this->beerService = $beerService;
     }
 
@@ -47,21 +51,23 @@ class BeerRestApiController extends FOSRestController
         }
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the request object
-        $view = $this->view($beer, Response::HTTP_OK);
+        //return View::create($beer, Response::HTTP_CREATED);
+
+        $view = $this->view($beer, 200);
+
         return $this->handleView($view);
     }
 
     /**
      * Retrieves a collection of Beers resource
-     * @Rest\Get("/beers/brewer/{brewerId<\d+>?}")
+     * @Rest\Get("/brewers")
      */
-    public function getBeersByBrewer(int $brewerId)
+    public function getBrewers()
     {
-        $beers = $this->beerService->getBeersByBrewer($brewerId);
+        $brewers = $this->brewerService->getAllBrewers();
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
-        $view = $this->view($beers, Response::HTTP_OK);
-        return $this->handleView($view);
+        return View::create($brewers, Response::HTTP_CREATED);
     }
 
     /**
@@ -89,8 +95,10 @@ class BeerRestApiController extends FOSRestController
 
         }
 
+       // $serializer = SerializerBuilder::create()->build();
+        //$jsonObject = $serializer->serialize($beers, 'json');
+
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
-        $view = $this->view($beers, Response::HTTP_OK);
-        return $this->handleView($view);
+        return View::create($beers, Response::HTTP_CREATED);
     }
 }

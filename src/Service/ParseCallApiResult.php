@@ -56,19 +56,8 @@ class ParseCallApiResult
         if ($parsedData) {
             foreach ($parsedData as $parsedElement) {
 
-                $brewer = $brewersRepository->findOneBy(
-                    ['name' => $parsedElement->brewer]
-                );
-
-                if ($brewer) {
-                    $brewerId = $brewer->getId();
-                } else {
-                    $brewer = new Brewers();
-                    $brewer->setName($parsedElement->brewer);
-                    $this->entityManager->persist($brewer);
-                    $this->entityManager->flush();
-                    $brewerId = $brewer->getId();
-                }
+                //add country
+                //TODO countries should contain code like PL, UA, DE
 
                 $country = $countriesRepository->findOneBy(
                     ['name' => $parsedElement->country]
@@ -85,6 +74,20 @@ class ParseCallApiResult
                     $countryId = $country->getId();
                 }
 
+
+                //add brewer
+                $brewer = $brewersRepository->findOneBy(
+                    ['name' => $parsedElement->brewer]
+                );
+
+                if ($brewer) {
+                    $brewerId = $brewer->getId();
+                } else {
+                    $brewer = new Brewers();
+                    $brewer->setName($parsedElement->brewer);
+                }
+
+                //add beer related to bewer
                 $beer = $beersRepository->findOneBy(
                     ['beerId' => $parsedElement->beer_id]
                 );
@@ -93,13 +96,20 @@ class ParseCallApiResult
                     $beer = new Beers();
                 }
 
-                $beer->setBrewerId($brewerId);
+                //TODO remove field from the table
+                $beer->setBrewerId(1);
+
                 $beer->setName($parsedElement->brewer);
                 $beer->setType($parsedElement->type);
                 $beer->setBeerId($parsedElement->beer_id);
                 $beer->setPrice($parsedElement->price);
+                $beer->setImageUrl($parsedElement->image_url);
                 $beer->setCountryId($countryId);
 
+                //relations with brewer
+                $beer->setBrewId($brewer);
+
+                $this->entityManager->persist($brewer);
                 $this->entityManager->persist($beer);
                 $this->entityManager->flush();
 

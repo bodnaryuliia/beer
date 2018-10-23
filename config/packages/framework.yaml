@@ -14,7 +14,7 @@ framework:
     php_errors:
         log: true
 
-    #templating: { engines: ['twig'] }
+    templating: { engines: ['twig'] }
 
     cache:
         # Put the unique name of your app here: the prefix seed
@@ -33,4 +33,4 @@ framework:
 
 sensio_framework_extra:
     view:        { annotations: true }
-    router: { annotations: true }
+
