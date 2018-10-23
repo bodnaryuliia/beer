@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <script> var clients = {{ dataBeers|replace({'"':'\''})|raw }};
+
+    </script>
+
+    <div class="text-center">
+        <h3>My Symfony 4 sample project</h3>
+
+        <div id="jsGrid"></div>
+    </div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
