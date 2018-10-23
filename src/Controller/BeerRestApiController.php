@@ -11,6 +11,10 @@ use FOS\RestBundle\Controller\Annotations\RequestParam;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Controller\Annotations\FileParam;
 use Acme\FooBundle\Validation\Constraints\MyComplexConstraint;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use FOS\RestBundle\View\View;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use JMS\Serializer\SerializerBuilder;
@@ -53,7 +57,17 @@ class BeerRestApiController extends FOSRestController
         // In case our GET was a success we need to return a 200 HTTP OK response with the request object
         //return View::create($beer, Response::HTTP_CREATED);
 
-        $view = $this->view($beer, 200);
+        //TODO edit this code/ Here is serialized in wrong way
+        $encoder = new JsonEncoder();
+        $normalizer = new ObjectNormalizer();
+
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $serializer = new Serializer(array($normalizer), array($encoder));
+        $json = $serializer->serialize($beer, 'json');
+
+        $view = $this->view($json, 200);
 
         return $this->handleView($view);
     }
@@ -66,8 +80,18 @@ class BeerRestApiController extends FOSRestController
     {
         $brewers = $this->brewerService->getAllBrewers();
 
+        //TODO edit this code/ Here is serialized in wrong way
+        $encoder = new JsonEncoder();
+        $normalizer = new ObjectNormalizer();
+
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $serializer = new Serializer(array($normalizer), array($encoder));
+        $json = $serializer->serialize($brewers, 'json');
+
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
-        return View::create($brewers, Response::HTTP_CREATED);
+        return View::create($json, Response::HTTP_CREATED);
     }
 
     /**
@@ -95,10 +119,21 @@ class BeerRestApiController extends FOSRestController
 
         }
 
-       // $serializer = SerializerBuilder::create()->build();
-        //$jsonObject = $serializer->serialize($beers, 'json');
+        //TODO edit this code/ Here is serialized in wrong way
+        $encoder = new JsonEncoder();
+        $normalizer = new ObjectNormalizer();
+
+        $normalizer->setCircularReferenceHandler(function ($object) {
+            return $object->getId();
+        });
+        $serializer = new Serializer(array($normalizer), array($encoder));
+        $json = $serializer->serialize($beers, 'json');
 
         // In case our GET was a success we need to return a 200 HTTP OK response with the collection of article object
-        return View::create($beers, Response::HTTP_CREATED);
+        return View::create($json, Response::HTTP_CREATED);
+
+        //$serializer = SerializerBuilder::create()->build();
+        //$jsonObject = $serializer->serialize($beers, 'json');
+
     }
 }
